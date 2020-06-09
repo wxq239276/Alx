@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zb.mapper.FeatureMapper">
+        <resultMap id="mylabel" type="com.zb.entity.Feature">
+            <id property="id" column="id"></id>
+            <association property="itripLabelDic" javaType="com.zb.entity.ItripLabelDic"></association>
+        </resultMap>
+        
+        <select id="findHotelFeature" resultMap="mylabel">
+            SELECT *FROM itrip_hotel_feature f ,itrip_label_dic l WHERE  f.`featureId`=l.`id` AND hotelid=#{hotelid}
+        </select>
+</mapper>  

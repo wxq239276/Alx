@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zb.mapper.TemplateStoreMapper">
+
+    <select id="findOrderCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM `itrip_hotel_temp_store` WHERE hotelid = #{hotelid} AND roomid = #{roomid}
+        AND recorddate>NOW()
+    </select>
+
+    <insert id="insertHotelStore" parameterType="com.zb.entity.ItripHotelTempStore">
+        insert into itrip_hotel_temp_store values(#{id},#{hotelId} ,#{roomId} ,now(),#{store} ,#{status},#{createdBy})
+    </insert>
+
+    <select id="findOrderDetail" resultType="com.zb.entity.ItripHotelTempStore">
+         SELECT *  FROM `itrip_hotel_temp_store` WHERE 1=1
+          <if test="roomid!=null and roomid!=''">
+              and roomid = #{roomid}
+          </if>
+
+    </select>
+
+    <update id="updateOrder">
+        UPDATE `itrip_hotel_temp_store` SET STATUS=1 WHERE 1=1
+        <if test="roomid!=null and roomid!=''">
+            and roomid = #{roomid}
+        </if>
+        <if test="userId!=null and userId!=''">
+            AND createdby=#{userId}
+        </if>
+    </update>
+
+</mapper>

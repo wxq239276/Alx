@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zb.mapper.RoomMapper">
+    <select id="findMinprice" resultType="double">
+        SELECT MIN(roomPrice)FROM `itrip_hotel_room` WHERE hotelId = #{hotelid}
+    </select>
+
+    <select id="findRoomByHotelid" resultType="com.zb.entity.Room" parameterType="com.zb.vo.RoomForm">
+        SELECT r.*,(SELECT NAME FROM `itrip_label_dic` d WHERE d.`id`=r.`roomBedTypeId` )AS roomBedType
+        FROM `itrip_hotel_room` r WHERE hotelid=#{hotelid}
+        <foreach collection="choose" item="choose" >
+            <if test="choose=='含早餐'">
+                AND isHavingBreakfast=0
+            </if>
+            <if test="choose=='立刻确认'">
+                AND isTimelyResponse=1
+            </if>
+            <if test="choose=='免费取消'">
+                AND isCancel=1
+            </if>
+            <if test="choose=='可预定'">
+                AND isBook=1
+            </if>
+        </foreach>
+        <if test="bedtypeid!=null and bedtypeid!=''">
+            AND roomBedTypeId =#{bedtypeid}
+        </if>
+        <if test="paytypeid!=null and paytypeid!=''">
+            AND payType=#{paytypeid}
+        </if>
+        ORDER BY isdicount DESC
+    </select>
+
+
+    <select id="findDiscountRoom" resultType="com.zb.entity.Room">
+         SELECT *FROM `itrip_hotel_room` WHERE isdicount=1
+    </select>
+
+
+</mapper>  

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Alx-common" />
+        <module name="Alx-eureka" />
+        <module name="Alx-gateway-zuul" />
+        <module name="Alx-record-consumer" />
+        <module name="Alx-record-provider" />
+        <module name="Alx-trip-consumer" />
+        <module name="Alx-trip-provider" />
+        <module name="Alx-user-consumer" />
+        <module name="Alx-user-provider" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zb.mapper.HotelDetailMapper">
+
+   <select id="findHotelByCityid" resultType="com.zb.entity.HotelDetail">
+        SELECT * FROM `itrip_hotel` WHERE countryId =#{areaId} OR provinceId=#{areaId}  OR cityId =#{areaId}
+   </select>
+
+    <select id="findHotelByid" resultType="com.zb.entity.HotelDetail">
+        SELECT * FROM `itrip_hotel` WHERE id = #{id}
+    </select>
+
+    <select id="findHotelAll" resultType="com.zb.entity.HotelDetail">
+        SELECT *FROM itrip_hotel
+    </select>
+
+    <select id="findHotelPage" resultType="com.zb.entity.HotelDetail" parameterType="com.zb.vo.tripPageForm">
+         SELECT h.*,
+                (CONVERT((SELECT AVG(score)  FROM `itrip_comment` c WHERE c.`hotelId` = h.id ),DECIMAL(10,1)) )
+                AS  wholeScore,
+                ( SELECT  MIN(roomPrice) FROM `itrip_hotel_room` r WHERE r.`hotelId`= h.id )
+                AS minprice,
+                (CONVERT((SELECT SUM(isOk)/COUNT(hotelId)  FROM `itrip_comment` c WHERE c.`hotelId` = h.id ),DECIMAL(10,2)) )
+                AS recommend,
+                (SELECT COUNT(id)  FROM `itrip_comment` c WHERE c.`hotelId` = h.id )
+                AS commentnum
+         FROM `itrip_hotel` h  WHERE 1=1
+        <if test="location!=null and location.length>0">
+               and id IN (
+               SELECT hotelid FROM `itrip_hotel_trading_area`
+               WHERE areaid IN
+               <foreach collection="location" item="location" open="(" close=")" separator=",">#{location}
+               </foreach>
+               )
+            </if>
+            <if test="price!=null and price.length>0">
+                AND id IN (SELECT hotelid FROM `itrip_hotel_room`
+                <where>
+                    <foreach collection="price" item="myprice" >
+                        <if test="myprice==1">
+                            roomPrice  &lt; 150
+                        </if>
+                        <if test="myprice==2">
+                            or  roomPrice  BETWEEN 150 AND 300
+                        </if>
+                        <if test="myprice==3">
+                            or  roomPrice  BETWEEN 301 AND 450
+                        </if>
+                        <if test="myprice==4">
+                            or  roomPrice  &gt;450
+                        </if>
+                    </foreach>
+                </where>
+                GROUP BY hotelid)
+            </if>
+            <if test="feature!=null and feature.length>0">
+                AND id IN (SELECT hotelid FROM `itrip_hotel_feature`
+                WHERE featureId IN
+                <foreach collection="feature" item="feature" open="(" close=")" separator=",">
+                    #{feature}
+                </foreach>
+                GROUP BY hotelid)
+            </if>
+            <if test="paytype!=null and paytype.length>0">
+                AND id IN (
+                SELECT hotelid FROM `itrip_hotel_room` WHERE  paytype in
+                <foreach collection="paytype" item="paytype" open="(" close=")" separator=",">
+                    #{paytype}
+                </foreach>)
+            </if>
+            <if test="level!=null and level.length>0">
+                AND h.`hotelLevel` IN
+                <foreach collection="level" item="level" open="(" close=")" separator=",">
+                   #{level}
+                </foreach>
+            </if>
+            <if test="ordertype=='最受欢迎'">
+                ORDER BY recommend  DESC
+            </if>
+            <if test="ordertype=='评分'">
+                ORDER BY wholeScore  DESC
+            </if>
+            <if test="ordertype=='价格'">
+                ORDER BY minprice  DESC
+            </if>
+            <if test="ordertype=='星级'">
+                ORDER BY h.hotelLevel  DESC
+            </if>
+          LIMIT #{start},#{size}
+    </select>
+
+    <select id="findCount" resultType="int" parameterType="com.zb.vo.tripPageForm">
+        SELECT count(*)
+        FROM `itrip_hotel` h  WHERE 1=1
+        <if test="location!=null and location.length>0">
+            and id IN (
+            SELECT hotelid FROM `itrip_hotel_trading_area`
+            WHERE areaid IN
+            <foreach collection="location" item="location" open="(" close=")" separator=",">#{location}
+            </foreach>
+            )
+        </if>
+        <if test="price!=null and price.length>0">
+            AND id IN (SELECT hotelid FROM `itrip_hotel_room`
+            <where>
+                <foreach collection="price" item="myprice" >
+                    <if test="myprice==1">
+                        roomPrice  &lt; 150
+                    </if>
+                    <if test="myprice==2">
+                        or  roomPrice  BETWEEN 150 AND 300
+                    </if>
+                    <if test="myprice==3">
+                        or  roomPrice  BETWEEN 301 AND 450
+                    </if>
+                    <if test="myprice==4">
+                        or  roomPrice  &gt;450
+                    </if>
+                </foreach>
+            </where>
+            GROUP BY hotelid)
+        </if>
+        <if test="feature!=null and feature.length>0">
+            AND id IN (SELECT hotelid FROM `itrip_hotel_feature`
+            WHERE featureId IN
+            <foreach collection="feature" item="feature" open="(" close=")" separator=",">
+                #{feature}
+            </foreach>
+            GROUP BY hotelid)
+        </if>
+        <if test="paytype!=null and paytype.length>0">
+            AND id IN (
+            SELECT hotelid FROM `itrip_hotel_room` WHERE  paytype in
+            <foreach collection="paytype" item="paytype" open="(" close=")" separator=",">
+                #{paytype}
+            </foreach>)
+        </if>
+        <if test="level!=null and level.length>0">
+            AND h.`hotelLevel` IN
+            <foreach collection="level" item="level" open="(" close=")" separator=",">
+                #{level}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>  

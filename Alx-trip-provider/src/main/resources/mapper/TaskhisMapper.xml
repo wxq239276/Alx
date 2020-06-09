@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zb.mapper.TaskhisMapper">
+
+    <insert id="insertHis" parameterType="com.zb.entity.ItripTaskHis">
+          insert into itrip_task_his(
+                        id,
+                        create_time,
+                        update_time,
+                        delete_time,
+                        task_type,
+                        mq_exchange,
+                        mq_routingkey,
+                        request_body,
+                        version,
+                        status,
+                        errormsg)
+        values(
+                      #{id},
+                     #{createTime},
+                     #{updateTime},
+                     #{deleteTime},
+                     #{taskType},
+                     #{mqExchange},
+                     #{mqRoutingkey},
+                     #{requestBody},
+                     #{version},
+                     #{status},
+                    #{errormsg})
+    </insert>
+
+
+    <select id="getHisByid" resultType="com.zb.entity.ItripTaskHis">
+         SELECT
+                id as id,
+                create_time as createTime,
+                update_time as updateTime,
+                delete_time as deleteTime,
+                task_type as taskType,
+                mq_exchange as mqExchange,
+                mq_routingkey as mqRoutingkey,
+                request_body as requestBody,
+                version as version,
+                status as status,
+                errormsg as errormsg
+          FROM`itrip_task_his`WHERE id=#{id}
+    </select>
+
+    <update id="updateHis" parameterType="com.zb.entity.ItripTaskHis">
+        update itrip_task_his
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+            <if test="createTime != null and createTime!=''">
+                create_time=#{createTime},
+            </if>
+            <if test="updateTime != null and updateTime!=''">
+                update_time=#{updateTime},
+            </if>
+            <if test="deleteTime != null and deleteTime!=''">
+                delete_time=#{deleteTime},
+            </if>
+            <if test="taskType != null and taskType!=''">
+                task_type=#{taskType},
+            </if>
+            <if test="mqExchange != null and mqExchange!=''">
+                mq_exchange=#{mqExchange},
+            </if>
+            <if test="mqRoutingkey != null and mqRoutingkey!=''">
+                mq_routingkey=#{mqRoutingkey},
+            </if>
+            <if test="requestBody != null and requestBody!=''">
+                request_body=#{requestBody},
+            </if>
+            <if test="version != null and version!=''">
+                version=#{version},
+            </if>
+            <if test="status != null and status!=''">
+                status=#{status},
+            </if>
+            <if test="errormsg != null and errormsg!=''">
+                errormsg=#{errormsg}
+            </if>
+        </trim>
+    </update>
+</mapper>

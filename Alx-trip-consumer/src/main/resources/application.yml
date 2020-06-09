@@ -1,0 +1,33 @@
+server:
+  port: 10001
+spring:
+  application:
+    name: trip-consumer
+  redis:
+    host: 127.0.0.1
+    password: ok
+    port: 6379
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+eureka:
+  client:
+    service-url:
+      defaultZone: http://root:ok@localhost:6001/eureka/
+#重试机制（只需要在消费端配置）
+user-provider:
+  ribbon:
+    ConnectTimeout: 6000 #连接超时时间
+    ReadTimeout: 6000 #数据读取超时时间
+    OkToRetryOnAllOperations: true #是否对所有操作进行重试
+    MaxAutoRetries: 1 #对当前实例的重试次数
+    MaxAutoRetriesNextServer: 1 #切换实例的重试次数
+
+#使用Hystrix处理容错（Feign已经整合了Hystrix）
+feign:
+  hystrix:
+    enabled: true
+

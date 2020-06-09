@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zb.mapper.RecordMapper">
+    <insert id="addRecord" parameterType="com.zb.entity.ItripPurchaserecord">
+        insert into itrip_purchaserecord(
+                        id ,
+                        goods_id,
+                        user_id,
+                        charge,
+                        price,
+                        valid,
+                        start_time,
+                        end_time,
+                        status)
+        values(
+                    #{id},
+                     #{goodsId},
+                     #{userId},
+                     #{charge},
+                     #{price},
+                     #{valid},
+                    #{startTime},
+                     #{endTime},
+                    #{status})
+    </insert>
+
+    <update id="updateRecord" parameterType="com.zb.entity.ItripPurchaserecord">
+        update itrip_purchaserecord
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+            <if test="goodsId != null and goodsId!=''">
+                goods_id=#{goodsId},
+            </if>
+            <if test="userId != null and userId!=''">
+                user_id=#{userId},
+            </if>
+            <if test="charge != null and charge!=''">
+                charge=#{charge},
+            </if>
+            <if test="price != null and price!=''">
+                price=#{price},
+            </if>
+            <if test="valid != null and valid!=''">
+                valid=#{valid},
+            </if>
+            <if test="startTime != null and startTime!=''">
+                start_time=#{startTime},
+            </if>
+            <if test="endTime != null and endTime!=''">
+                end_time=#{endTime},
+            </if>
+            <if test="status != null and status!=''">
+                status=#{status}
+            </if>
+        </trim>
+    </update>
+
+    <select id="findRecordByid" resultType="com.zb.entity.ItripPurchaserecord">
+        SELECT
+                id as id,
+                goods_id as goodsId,
+                user_id as userId,
+                charge as charge,
+                price as price,
+                valid as valid,
+                start_time as startTime,
+                end_time as endTime,
+                status as status
+        FROM `itrip_purchaserecord` WHERE user_id =#{userId} AND goods_id=#{goodsId}
+    </select>
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zb.mapper.TaskMapper">
+    <insert id="insertTask" parameterType="com.zb.entity.ItripTask">
+       insert into itrip_task
+        values(
+                    #{id}  ,
+                    now(),
+                      now(),
+                      now(),
+                     #{taskType},
+                     #{mqExchange},
+                     #{mqRoutingkey},
+                     #{requestBody},
+                     #{version},
+                     #{status},
+                    #{errormsg})
+    </insert>
+
+    <select id="findTaskByid" resultType="com.zb.entity.ItripTask">
+        SELECT
+                id as id,
+                create_time as createTime,
+                update_time as updateTime,
+                delete_time as deleteTime,
+                task_type as taskType,
+                mq_exchange as mqExchange,
+                mq_routingkey as mqRoutingkey,
+                request_body as requestBody,
+                version as version,
+                status as status,
+                errormsg as errormsg
+        FROM`itrip_task` WHERE id=#{id}
+    </select>
+
+    <update id="updateTasktime" parameterType="com.zb.entity.ItripTask">
+        update itrip_task
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+            <if test="createTime != null and createTime!=''">
+                create_time=#{createTime},
+            </if>
+            update_time=now(),
+            <if test="deleteTime != null and deleteTime!=''">
+                delete_time=#{deleteTime},
+            </if>
+            <if test="taskType != null and taskType!=''">
+                task_type=#{taskType},
+            </if>
+            <if test="mqExchange != null and mqExchange!=''">
+                mq_exchange=#{mqExchange},
+            </if>
+            <if test="mqRoutingkey != null and mqRoutingkey!=''">
+                mq_routingkey=#{mqRoutingkey},
+            </if>
+            <if test="requestBody != null and requestBody!=''">
+                request_body=#{requestBody},
+            </if>
+            <if test="version != null and version!=''">
+                version=#{version},
+            </if>
+            <if test="status != null and status!=''">
+                status=#{status},
+            </if>
+            <if test="errormsg != null and errormsg!=''">
+                errormsg=#{errormsg}
+            </if>
+        </trim>
+    </update>
+
+    <select id="findByUpdateTimeBefore" resultType="com.zb.entity.ItripTask">
+        SELECT
+                id as id,
+                create_time as createTime,
+                update_time as updateTime,
+                delete_time as deleteTime,
+                task_type as taskType,
+                mq_exchange as mqExchange,
+                mq_routingkey as mqRoutingkey,
+                request_body as requestBody,
+                version as version,
+                status as status,
+                errormsg as errormsg
+        FROM itrip_task WHERE TIMESTAMPDIFF( MINUTE,update_time, NOW())>1
+    </select>
+
+    <update id="updateTaskVersion" parameterType="com.zb.entity.ItripTask">
+        update itrip_task set version = version+1  where id=#{id} and version = #{version}
+    </update>
+
+    <delete id="delTask">
+          delete from `itrip_task` where id=#{id}
+    </delete>
+</mapper>
